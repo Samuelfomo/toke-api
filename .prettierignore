@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+coverage/
+.tsbuildinfo
+
+# Database
+*.sql
+migrations/
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.*
+
+# IDE files
+.vscode/
+.idea/
+
+# Generated files
+*.d.ts
+*.map
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+
+# PM2
+ecosystem.config.js

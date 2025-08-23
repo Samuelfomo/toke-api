@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="d322d213-caf3-4776-aff2-213eb606fdb8" name="toke-api">
+        <fileTransfer accessType="SFTP" host="my.gocloud.cm" port="22" sshConfigId="7f1cb361-6052-41f9-bbd0-5a17370398b4" sshConfig="tokecloudapp@my.gocloud.cm:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

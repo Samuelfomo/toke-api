@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="my.gocloud.cm" id="7f1cb361-6052-41f9-bbd0-5a17370398b4" port="22" nameFormat="DESCRIPTIVE" username="tokecloudapp" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>
