@@ -1,4 +1,5 @@
 import { DataTypes, ModelAttributes, ModelOptions } from 'sequelize';
+import bcrypt from 'bcrypt';
 
 import G from '../../tools/glossary';
 
@@ -150,6 +151,57 @@ export const TenantDbStructure = {
       },
       comment: 'Status',
     },
+    subdomain: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      unique: {
+        name: 'unique_tenant_subdomain',
+        msg: 'Tenant subdomain must be unique',
+      },
+      validate: {
+        is: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+        len: [0, 255],
+      },
+      comment: 'Subdomain',
+    },
+    database_name: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+      // unique: {
+      //   name: 'unique_tenant_database_name',
+      //   msg: 'Tenant database name must be unique',
+      // },
+      validate: {
+        is: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+        len: [0, 128],
+      },
+      comment: 'Database name',
+    },
+    database_username: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+      validate: {
+        is: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+        len: [0, 128],
+      },
+      comment: 'Database username',
+    },
+    database_password: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      validate: {
+        len: [8, 255], // Minimum 8 caractères pour un mot de passe
+      },
+      comment: 'Database password (hashed)',
+      set(value: string) {
+        // Hash automatique du mot de passe
+        if (value) {
+          const salt = bcrypt.genSaltSync(12);
+          const hash = bcrypt.hashSync(value, salt);
+          this.setDataValue('database_password', hash);
+        }
+      },
+    },
   } as ModelAttributes,
   options: {
     tableName: `${G.tableAp}_tenant`,
@@ -216,6 +268,18 @@ export const TenantDbStructure = {
         fields: ['created_at'],
         name: 'idx_tenant_created_at',
       },
+      {
+        fields: ['subdomain'],
+        name: 'idx_tenant_subdomain',
+      },
+      {
+        fields: ['database_name'],
+        name: 'idx_tenant_database_name',
+      },
+      {
+        fields: ['database_username'],
+        name: 'idx_tenant_database_username',
+      },
       // {
       //   fields: ['updated_at'],
       //   name: 'idx_tenant_updated_at',
@@ -241,9 +305,10 @@ export const TenantDbStructure = {
       const isoRegex = /^[A-Z]{3}$/;
       return isoRegex.test(trimmed);
     },
-    validatePreferredLanguageCode: (code: string) => {
+    validatePreferredLanguageCode: (code: string): boolean => {
       const trimmed = code.trim().toUpperCase();
       const isoRegex = /^[a-z]{2}$/;
+      return isoRegex.test(trimmed);
     },
     validateTimezone: (timezone: string): boolean => {
       const trimmed = timezone.trim();
@@ -272,6 +337,31 @@ export const TenantDbStructure = {
     },
     validateStatus: (status: string): boolean => {
       return Object.values(Status).includes(status as Status);
+    },
+
+    validateSubdomain: (subdomain: string): boolean => {
+      const trimmed = subdomain.trim().toLowerCase();
+      const subdomainRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+      return trimmed.length >= 1 && trimmed.length <= 255 && subdomainRegex.test(trimmed);
+    },
+
+    validateDbName: (name: string): boolean => {
+      const trimmed = name.trim().toLowerCase();
+      const dbNameRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+      return trimmed.length >= 1 && trimmed.length <= 128 && dbNameRegex.test(trimmed);
+    },
+
+    validateDbUser: (user: string): boolean => {
+      const trimmed = user.trim().toLowerCase();
+      const dbUserRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+      return trimmed.length >= 1 && trimmed.length <= 128 && dbUserRegex.test(trimmed);
+    },
+
+    validateDbPass: (pass: string): boolean => {
+      const trimmed = pass.trim();
+      // Validation avant hachage : minimum 8 caractères, au moins une majuscule, une minuscule, un chiffre
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,255}$/;
+      return passwordRegex.test(trimmed);
     },
 
     cleanData: (data: any): void => {
@@ -311,6 +401,32 @@ export const TenantDbStructure = {
       if (data.is_tax_exempt) {
         data.is_tax_exempt = data.is_tax_exempt === 'true';
       }
+      if (data.subdomain) {
+        data.subdomain = data.subdomain.trim().toLowerCase();
+      }
+      if (data.database_name) {
+        data.database_name = data.database_name.trim().toLowerCase();
+      }
+      if (data.database_username) {
+        data.database_username = data.database_username.trim().toLowerCase();
+      }
+      // Note: database_password sera hashé automatiquement par le setter, pas besoin de nettoyer ici
+
+      // Corriger aussi preferred_language_code :
+      if (data.preferred_language_code) {
+        data.preferred_language_code = data.preferred_language_code.trim().toLowerCase(); // pas toUpperCase
+      }
     },
   },
+
+  // // 5. Ajouter une méthode pour vérifier le mot de passe (dans les options du modèle) :
+  // options: {
+  //   // ... vos options existantes ...
+  //
+  //   // Ajouter des méthodes d'instance
+  //   instanceMethods: {
+  //     validatePassword: function(password: string): boolean {
+  //       return bcrypt.compareSync(password, this.database_password);
+  //     }
+  //   }
 };

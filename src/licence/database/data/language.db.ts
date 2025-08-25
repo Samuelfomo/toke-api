@@ -93,7 +93,7 @@ export const LanguageDbStructure = {
         name: 'idx_language_name_local',
       },
       {
-        fields: ['is_active'],
+        fields: ['active'],
         name: 'idx_language_is_active',
       },
     ],
@@ -123,8 +123,8 @@ export const LanguageDbStructure = {
       if (data.name_local) {
         data.name_local = data.name_local.trim();
       }
-      if (data.is_active) {
-        data.is_active = data.is_active === 'true';
+      if (data.active) {
+        data.active = data.active === 'true';
       }
     },
   },

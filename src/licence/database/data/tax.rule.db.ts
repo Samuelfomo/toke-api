@@ -156,7 +156,7 @@ export const TaxRuleDbStructure = {
         name: 'idx_tax_rule_expiry_date',
       },
       {
-        fields: ['is_active'],
+        fields: ['active'],
         name: 'idx_tax_rule_is_active',
       },
       // {
@@ -223,8 +223,8 @@ export const TaxRuleDbStructure = {
       if (data.expiry_date) {
         data.expiry_date = new Date(data.expiry_date);
       }
-      if (data.is_active) {
-        data.is_active = data.is_active === 'true';
+      if (data.active) {
+        data.active = data.active === 'true';
       }
     },
   },

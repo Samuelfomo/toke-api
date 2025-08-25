@@ -157,7 +157,7 @@ router.get('/active/:status', Ensure.get(), async (req: Request, res: Response) 
 
     const countriesData = await Country._listByActiveStatus(isActive, paginationOptions);
     const countries = {
-      is_active: isActive,
+      active: isActive,
       pagination: {
         offset: paginationOptions.offset || 0,
         limit: paginationOptions.limit || countriesData?.length,

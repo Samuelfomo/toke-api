@@ -28,6 +28,10 @@ export const ExchangeRateDbStructure = {
     from_currency_code: {
       type: DataTypes.STRING(3),
       allowNull: false,
+      references: {
+        model: `${G.tableConf}_currency`,
+        key: 'code',
+      },
       validate: {
         is: /^[A-Z]{3}$/,
         len: [3, 3],
@@ -37,6 +41,10 @@ export const ExchangeRateDbStructure = {
     to_currency_code: {
       type: DataTypes.STRING(3),
       allowNull: false,
+      references: {
+        model: `${G.tableConf}_currency`,
+        key: 'code',
+      },
       validate: {
         is: /^[A-Z]{3}$/,
         len: [3, 3],
@@ -48,12 +56,12 @@ export const ExchangeRateDbStructure = {
       allowNull: false,
       validate: {
         isDecimal: true,
-        min: 0,
+        min: 1,
         max: 999999.999999,
       },
       comment: 'Exchange rate',
     },
-    is_current: {
+    current: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
@@ -99,7 +107,7 @@ export const ExchangeRateDbStructure = {
         name: 'idx_exchange_rate_exchange_rate',
       },
       {
-        fields: ['is_current'],
+        fields: ['current'],
         name: 'idx_exchange_rate_is_current',
       },
       {
@@ -120,18 +128,19 @@ export const ExchangeRateDbStructure = {
       const isoRegex = /^[A-Z]{3}$/;
       return isoRegex.test(trimmed);
     },
-    validateExchangeRate(rate: string): boolean {
-      const trimmed = rate.trim();
+    validateExchangeRate(rate: number): boolean {
+      const trimmed = rate.toString().trim();
       const rateRegex = /^[0-9]+(\.[0-9]{1,6})?$/;
-      return rateRegex.test(trimmed);
+      return rateRegex.test(trimmed) && parseFloat(trimmed) > 0;
     },
-    validateIsCurrent(isCurrent: string): boolean {
-      const trimmed = isCurrent.trim();
-      const isCurrentRegex = /^(true|false)$/;
-      return isCurrentRegex.test(trimmed);
+    isCurrent(current: boolean): boolean {
+      return typeof current === 'boolean';
+      // const trimmed = current.toString().trim();
+      // const isCurrentRegex = /^(true|false)$/;
+      // return isCurrentRegex.test(trimmed);
     },
-    validateCreatedBy(id: string): boolean {
-      const trimmed = id.trim();
+    validateCreatedBy(id: number): boolean {
+      const trimmed = id.toString().trim();
       const idRegex = /^[0-9]+$/;
       return idRegex.test(trimmed);
     },
@@ -146,8 +155,8 @@ export const ExchangeRateDbStructure = {
       if (data.exchange_rate) {
         data.exchange_rate = data.exchange_rate.trim();
       }
-      if (data.is_current) {
-        data.is_current = data.is_current === 'true';
+      if (data.current) {
+        data.current = data.current === 'true';
       }
       if (data.created_by) {
         data.created_by = data.created_by.trim();

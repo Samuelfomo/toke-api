@@ -70,7 +70,7 @@ export const CurrencyDbStructure = {
       },
       comment: 'Number of decimal places',
     },
-    is_active: {
+    active: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
@@ -112,7 +112,7 @@ export const CurrencyDbStructure = {
         name: 'idx_currency_decimal_places',
       },
       {
-        fields: ['is_active'],
+        fields: ['active'],
         name: 'idx_currency_is_active',
       },
     ],
@@ -135,8 +135,8 @@ export const CurrencyDbStructure = {
       return trimmed.length >= 1 && trimmed.length <= 10;
     },
 
-    validateDecimalPlaces: (decimalPlaces: string): boolean => {
-      const trimmed = decimalPlaces.trim();
+    validateDecimalPlaces: (decimalPlaces: number): boolean => {
+      const trimmed = decimalPlaces.toString().trim();
       const decimalPlacesRegex = /^[0-9]+$/;
       return decimalPlacesRegex.test(trimmed);
     },
@@ -161,8 +161,8 @@ export const CurrencyDbStructure = {
       if (data.decimal_places) {
         data.decimal_places = data.decimal_places.trim();
       }
-      if (data.is_active) {
-        data.is_active = data.is_active === 'true';
+      if (data.active) {
+        data.active = data.active === 'true';
       }
     },
   },

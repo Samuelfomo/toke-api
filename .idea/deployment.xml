@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="On explicit save action" deleteMissingItems="true" createEmptyFolders="true" exclude=".svn;.cvs;.idea;.DS_Store;.git;.hg;*.hprof;*.pyc;node_modules;package-lock.json;logs;dist;" confirmBeforeDeletion="false" autoUploadExternalChanges="true">
+  <component name="PublishConfigData" autoUpload="On explicit save action" serverName="toke-api" deleteMissingItems="true" createEmptyFolders="true" exclude=".svn;.cvs;.idea;.DS_Store;.git;.hg;*.hprof;*.pyc;node_modules;package-lock.json;logs;dist;tmp;.env;docs;" confirmBeforeDeletion="false" autoUploadExternalChanges="true">
     <option name="confirmBeforeDeletion" value="false" />
     <serverData>
       <paths name="toke-api">
