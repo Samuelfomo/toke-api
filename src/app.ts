@@ -7,8 +7,14 @@ import cors from 'cors';
 //
 // dotenv.config();
 // Importation des modules simplifiés
-import Db from './licence/database/db.config';
-import { TableInitializer } from './licence/database/db.initializer';
+import Db from './license/database/db.config';
+import { TableInitializer } from './license/database/db.initializer';
+import { EntityRoute } from './utils/response.model';
+import CountryRoute from './license/routes/country.route';
+import CurrencyRoute from './license/routes/currency.route';
+import ExchangeRateRoute from './license/routes/exchange.rate.route';
+import LanguageRoute from './license/routes/language.route';
+import TaxRuleRoute from './license/routes/tax.rule.route';
 
 interface AppConfig {
   port: number;
@@ -181,6 +187,12 @@ export default class App {
 
     // TODO: Ajouter les routes métier ici
 
+    this.app.use(`/${EntityRoute.MASTER}/country`, CountryRoute);
+    this.app.use(`/${EntityRoute.MASTER}/currency`, CurrencyRoute);
+    this.app.use(`/${EntityRoute.MASTER}/exchange-rate`, ExchangeRateRoute);
+    this.app.use(`/${EntityRoute.MASTER}/language`, LanguageRoute);
+    this.app.use(`/${EntityRoute.MASTER}/tax-rule`, TaxRuleRoute);
+
     // Route 404
     this.app.use((req, res) => {
       res.status(404).json({
@@ -227,10 +239,10 @@ export default class App {
       console.log('🗄️ Initialisation de la base de données...');
 
       // // 1. Obtenir la connexion Sequelize
-      // const sequelize = await Db.getInstance();
+      const sequelize = await Db.getInstance();
       //
       // // 2. Initialiser toutes les tables (statique)
-      // await TableInitializer.initialize(sequelize);
+      await TableInitializer.initialize(sequelize);
 
       console.log('✅ Base de données initialisée');
     } catch (error) {
